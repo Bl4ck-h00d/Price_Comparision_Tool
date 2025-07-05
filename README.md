@@ -1,6 +1,39 @@
 # Price Comparison Tool
 
+
+![Watch the video](https://cdn.loom.com/sessions/thumbnails/88c213d189df47e1bc7722a3fbbf91f1-with-play.gif)](https://www.loom.com/share/88c213d189df47e1bc7722a3fbbf91f1)
+
+
 A comprehensive price comparison API that fetches the best prices for products from multiple websites across different countries using AI-powered scraping and ranking.
+
+## Architecture
+
+The price comparison tool follows a modular architecture:
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   FastAPI       │    │ PriceComparison  │    │   Scrapers      │
+│   REST API      │───►│     Service      │───►│   (Crawl4AI)    │
+│                 │    │                  │    │                 │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                │
+                                ▼
+                       ┌──────────────────┐
+                       │   OpenAI API     │
+                       │   (Ranking &     │
+                       │   Filtering)     │
+                       └──────────────────┘
+```
+
+**Key Components:**
+- **FastAPI**: RESTful API interface with async processing
+- **PriceComparisonService**: Orchestrates scraping across multiple websites
+- **Crawl4AI Scrapers**: Intelligent web scraping with JavaScript support
+- **OpenAI Integration**: GPT-3.5-turbo model for product ranking and relevance filtering
+- **Multi-Platform Support**: 
+  - **US**: Amazon, eBay, Walmart, Best Buy
+  - **India**: Amazon, eBay, Flipkart, Myntra, Tata CLiQ
+
 
 ## Features
 
@@ -167,6 +200,8 @@ curl -X POST "http://localhost:8000/compare" \
   }'
 ```
 
+
+
 ## Configuration
 
 ### Environment Variables
@@ -178,6 +213,5 @@ curl -X POST "http://localhost:8000/compare" \
 - `REQUEST_TIMEOUT`: HTTP request timeout in seconds (default: 30)
 
 
-![Watch the video](https://cdn.loom.com/sessions/thumbnails/88c213d189df47e1bc7722a3fbbf91f1-with-play.gif)](https://www.loom.com/share/88c213d189df47e1bc7722a3fbbf91f1)
 
 
