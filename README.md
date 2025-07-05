@@ -178,3 +178,12 @@ curl -X POST "http://localhost:8000/compare" \
 - `REQUEST_TIMEOUT`: HTTP request timeout in seconds (default: 30)
 
 
+<div>
+    <a href="https://www.loom.com/share/88c213d189df47e1bc7722a3fbbf91f1">
+      <p>Demo</p>
+    </a>
+    <a href="https://www.loom.com/share/88c213d189df47e1bc7722a3fbbf91f1">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/88c213d189df47e1bc7722a3fbbf91f1-f5334331047e4c38-full-play.gif">
+    </a>
+  </div>
+

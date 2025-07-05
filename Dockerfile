@@ -28,9 +28,6 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install Playwright browsers
-RUN playwright install chromium
-
 # Copy application code
 COPY . .
 
@@ -38,7 +35,11 @@ COPY . .
 RUN useradd --create-home --shell /bin/bash appuser \
     && chown -R appuser:appuser /app
 
+# Switch to appuser and install Playwright browsers
 USER appuser
+
+# Install Playwright browsers as the appuser
+RUN playwright install chromium
 
 # Expose port
 EXPOSE 8000
