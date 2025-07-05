@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+requests
+beautifulsoup4
+openai
+pydantic
+python-dotenv
+aiohttp
+price-parser
+
+
+
+# Crawl4AI for intelligent scraping
+crawl4ai
+playwright 

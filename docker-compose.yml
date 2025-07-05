@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  price-comparison-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - API_PORT=8000
+      - LOG_LEVEL=INFO
+      - MAX_CONCURRENT_REQUESTS=5
+      - REQUEST_TIMEOUT=30
+      # Required: OpenAI API key for AI-powered scraping and ranking
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - price-comparison-network
+    depends_on: []
+
+networks:
+  price-comparison-network:
+    driver: bridge
+
+volumes:
+  logs:
