@@ -52,7 +52,7 @@ class PriceComparisonService:
         return results
 
     def _get_scrapers_for_country(self, country: str) -> List:
-       
+
         scraper_mapping = {
             "US": [
                 AmazonScraper("US"),
@@ -124,7 +124,7 @@ class PriceComparisonService:
                 product_data.append(
                     f"{i}: {product.title} - {product.price} - {product.website}")
 
-         
+            logger.debug(f"Product data for AI:\n{chr(10).join(product_data)}")
             prompt = f"""
 You are a product comparison expert. Given the search query "{query}", analyze the following products and select the MOST RELEVANT ones for price comparison.
 
@@ -133,6 +133,7 @@ Instructions:
 - PRIORITIZE DIVERSITY: Include products from different websites when possible for better price comparison
 - Exclude obvious accessories (cases, chargers, cables) unless specifically requested
 - Exclude fake/knockoff products (marked as "fake", "replica", "clone")
+- Have eBay products on low priority unless they are significantly cheaper and authentic
 - Include authentic products with reasonable prices
 - Select at max top 2 most relevant products total from each website 
 - When multiple similar products exist, prefer variety across different websites
@@ -144,13 +145,12 @@ Return only the indices of relevant products as a comma-separated list (e.g., "0
 """
 
             response = self.client.chat.completions.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4o",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=200,
                 temperature=0
             )
 
-           
             ai_response = response.choices[0].message.content.strip()
             selected_indices = []
 
@@ -173,18 +173,17 @@ Return only the indices of relevant products as a comma-separated list (e.g., "0
             return []
 
     def _convert_to_results(self, products: List[ScrapedProduct], country: str) -> List[ProductResult]:
-       
+
         results = []
         default_currency = get_currency_for_country(country)
 
         for product in products:
             try:
-               
+
                 parsed_price = parse_price(product.price)
                 if parsed_price is None or parsed_price <= 0:
                     continue
 
-               
                 result = ProductResult(
                     link=product.url,
                     price=str(int(parsed_price)),
@@ -202,7 +201,7 @@ Return only the indices of relevant products as a comma-separated list (e.g., "0
         return results
 
     async def health_check(self) -> Dict[str, str]:
-       
+
         return {
             "status": "healthy",
             "ai_enabled": "yes" if self.client else "no",

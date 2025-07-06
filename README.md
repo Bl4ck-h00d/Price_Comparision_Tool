@@ -29,7 +29,7 @@ The price comparison tool follows a modular architecture:
 - **FastAPI**: RESTful API interface with async processing
 - **PriceComparisonService**: Orchestrates scraping across multiple websites
 - **Crawl4AI Scrapers**: Intelligent web scraping with JavaScript support
-- **OpenAI Integration**: GPT-3.5-turbo model for product ranking and relevance filtering
+- **OpenAI Integration**: GPT-4o model for product ranking and relevance filtering
 - **Multi-Platform Support**: 
   - **US**: Amazon, eBay, Walmart, Best Buy
   - **India**: Amazon, eBay, Flipkart, Myntra, Tata CLiQ
@@ -38,7 +38,7 @@ The price comparison tool follows a modular architecture:
 ## Features
 
 - **AI-Powered Scraping**: Uses Crawl4AI for intelligent web scraping and content extraction
-- **OpenAI Ranking**: Uses GPT-3.5-turbo for accurate product relevance ranking
+- **OpenAI Ranking**: Uses GPT-4o for accurate product relevance ranking
 - **Multi-Website Support**: Searches across major e-commerce platforms
 - **Country-Specific**: Supports US and India markets with localized websites
 - **Fast & Scalable**: Asynchronous processing with concurrent scraping
@@ -180,6 +180,27 @@ Check the service health status and view enabled scrapers.
 
 ## Testing
 
+### Live Demo
+
+You can test the price comparison tool directly using our deployed endpoint:
+
+**🔗 Live API**: `http://ec2-15-206-211-14.ap-south-1.compute.amazonaws.com:8000/compare`
+
+**Example Request:**
+```bash
+curl -X POST "http://ec2-15-206-211-14.ap-south-1.compute.amazonaws.com:8000/compare" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "country": "US",
+    "query": "iPhone 16 Pro, 128GB"
+  }'
+```
+
+**Health Check:**
+```bash
+curl "http://ec2-15-206-211-14.ap-south-1.compute.amazonaws.com:8000/health"
+```
+
 ### Manual Testing
 
 ```bash
@@ -211,7 +232,6 @@ curl -X POST "http://localhost:8000/compare" \
 - `LOG_LEVEL`: Logging level (default: INFO)
 - `MAX_CONCURRENT_REQUESTS`: Maximum concurrent scraping requests (default: 5)
 - `REQUEST_TIMEOUT`: HTTP request timeout in seconds (default: 30)
-
 
 
 

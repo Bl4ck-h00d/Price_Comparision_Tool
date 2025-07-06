@@ -507,9 +507,11 @@ class AmazonScraper(GenericWebScraper):
     def _find_product_containers(self, soup: BeautifulSoup) -> List[BeautifulSoup]:
 
         selectors = [
-            '[data-component-type="s-search-result"]',
+            '[data-component-type="s-search-result"]',  
+            '.s-result-item[data-asin]',
             '.s-result-item',
-            '[data-asin]'
+            '[data-asin]:not([data-component-type])',  
+            'div[data-index]'
         ]
 
         containers = []
@@ -521,15 +523,29 @@ class AmazonScraper(GenericWebScraper):
                     f"Found {len(found)} Amazon containers with selector: {selector}")
                 break
 
-        return containers[:50]
+        # Filter out containers that are clearly not product containers
+        valid_containers = []
+        for container in containers:
+            if container.get('data-asin') or 's-result-item' in container.get('class', []):
+                valid_containers.append(container)
+
+        logger.info(
+            f"Amazon {self.country} valid containers: {len(valid_containers)}")
+        return valid_containers[:50]
 
     def _extract_title(self, container: BeautifulSoup) -> Optional[str]:
 
         selectors = [
+            'h2.a-size-medium span',
+            'h2.a-size-medium',
+            'h2 span',
+            'h2',
+            'a.s-line-clamp-2 h2 span',
             'h2.s-size-mini span',
-            '.s-product-title',
             'h2 a span',
-            '.a-text-normal'
+            '.s-product-title',
+            '.a-text-normal',
+            'h2.a-size-base span'
         ]
 
         for selector in selectors:
@@ -544,30 +560,61 @@ class AmazonScraper(GenericWebScraper):
     def _extract_price(self, container: BeautifulSoup) -> Optional[str]:
 
         selectors = [
-            '.a-price-whole',
             '.a-price .a-offscreen',
+            '.a-price-whole',
+            '.a-price-fraction',
             '.a-price-range',
-            '.s-price'
+            '.s-price',
+            '.a-price',
+            '[data-a-color="price"]',
+            '.a-price-symbol',
+            '.a-price-prefix',
+            'span[aria-label*="$"]',
+            'span[aria-label*="price"]',
+            '.a-color-price',
+            '.a-text-price',
+            'span.a-price-whole',
+            'span.a-price-fraction',
+            'span[data-a-color="price"]',
+            '*[class*="price"]',
+            '.puisg-row span',
+            '.a-spacing-none span',
         ]
 
         for selector in selectors:
             element = container.select_one(selector)
             if element:
                 text = element.get_text(strip=True)
-                if text and re.search(r'[\d\$₹]', text):
-                    return text
+                
+                if text and (re.search(r'[\d\$₹]', text) or
+                             re.search(r'\$\s*\d', text) or
+                             re.search(r'\d+\.?\d*', text)):
+                    # Skip if it's  not a price (like ratings, reviews count, etc.)
+                    if not re.search(r'(star|review|rating|bought|customer)', text.lower()):
+                        return text
 
         return None
 
     def _extract_url(self, container: BeautifulSoup) -> Optional[str]:
 
-        link = container.select_one('h2 a, .s-link-style a, [data-asin] a')
-        if link and link.get('href'):
-            href = link.get('href')
-            if href.startswith('/'):
-                return self.base_url + href
-            elif href.startswith('http'):
-                return href
+        selectors = [
+            'h2 a',
+            'a.s-link-style',
+            'a.s-line-clamp-2',
+            '[data-asin] a',
+            'a[href*="/dp/"]',
+            '.s-product-image-container a',
+            'a.a-link-normal[href*="/dp/"]',
+        ]
+
+        for selector in selectors:
+            link = container.select_one(selector)
+            if link and link.get('href'):
+                href = link.get('href')
+                if href.startswith('/'):
+                    return self.base_url + href
+                elif href.startswith('http'):
+                    return href
 
         return None
 
