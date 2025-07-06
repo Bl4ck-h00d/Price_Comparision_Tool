@@ -59,6 +59,50 @@ The price comparison tool follows a modular architecture:
 - Myntra.com
 - Tata CLiQ
 
+## Testing
+
+### Live Demo
+
+You can test the price comparison tool directly using our deployed endpoint:
+
+**🔗 Live API**: `http://ec2-15-206-211-14.ap-south-1.compute.amazonaws.com:8000/compare`
+
+**Example Request:**
+```bash
+curl -X POST "http://ec2-15-206-211-14.ap-south-1.compute.amazonaws.com:8000/compare" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "country": "US",
+    "query": "iPhone 16 Pro, 128GB"
+  }'
+```
+
+**Health Check:**
+```bash
+curl "http://ec2-15-206-211-14.ap-south-1.compute.amazonaws.com:8000/health"
+```
+
+### Manual Testing
+
+```bash
+# Test with different products
+curl -X POST "http://localhost:8000/compare" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "country": "US",
+    "query": "MacBook Pro M3"
+  }'
+
+# Test with different countries
+curl -X POST "http://localhost:8000/compare" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "country": "IN",
+    "query": "Samsung Galaxy S24"
+  }'
+```
+
+
 ## Installation
 
 ### Prerequisites
@@ -178,48 +222,6 @@ Check the service health status and view enabled scrapers.
 ```
 
 
-## Testing
-
-### Live Demo
-
-You can test the price comparison tool directly using our deployed endpoint:
-
-**🔗 Live API**: `http://ec2-15-206-211-14.ap-south-1.compute.amazonaws.com:8000/compare`
-
-**Example Request:**
-```bash
-curl -X POST "http://ec2-15-206-211-14.ap-south-1.compute.amazonaws.com:8000/compare" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "country": "US",
-    "query": "iPhone 16 Pro, 128GB"
-  }'
-```
-
-**Health Check:**
-```bash
-curl "http://ec2-15-206-211-14.ap-south-1.compute.amazonaws.com:8000/health"
-```
-
-### Manual Testing
-
-```bash
-# Test with different products
-curl -X POST "http://localhost:8000/compare" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "country": "US",
-    "query": "MacBook Pro M3"
-  }'
-
-# Test with different countries
-curl -X POST "http://localhost:8000/compare" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "country": "IN",
-    "query": "Samsung Galaxy S24"
-  }'
-```
 
 
 
